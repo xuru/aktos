@@ -80,4 +80,3 @@ RUN DATABASE_URL="" \
 
 EXPOSE 5000
 CMD ["/start"]
-ENTRYPOINT ["/entrypoint"]

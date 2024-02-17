@@ -48,11 +48,12 @@ network:
 # Optional fields for more advanced use-cases.
 #
 variables:                    # Pass environment variables as key value pairs.
-#  LOG_LEVEL: info
-  POSTGRES_DB: database-aktos
-  POSTGRES_USER: postgres
-  POSTGRES_HOST: database-aktos.cvma8i2eurej.us-east-1.rds.amazonaws.com
+  POSTGRES_DB: aktos
+  POSTGRES_USER: pXKdhUGeEQbtgGhzGGmDfTjNnaibpWxv
+  POSTGRES_HOST: postgres
   POSTGRES_PORT: 5432
+  POSTGRES_PASSWORD: XCF9oacJWNyVrpsrNMTfuv9WIZc7PFtr0Z7ylaDyuafPnpewxiKzLGNXH1gvJHIA
+  DATABASE_URL: "postgres://pXKdhUGeEQbtgGhzGGmDfTjNnaibpWxv:XCF9oacJWNyVrpsrNMTfuv9WIZc7PFtr0Z7ylaDyuafPnpewxiKzLGNXH1gvJHIA@postgres:5432/aktos"
   DJANGO_SETTINGS_MODULE: config.settings.production
   DJANGO_SECRET_KEY: MOdSD2OWeLgsxvdDvXM8r7He5krtLfzLWCMaTsyo2Ab1WE0vytK4yGhrYzZtQ5OI
   DJANGO_ADMIN_URL: qO2OmgQxz7kB4TjiVmkKqAuVAUIWrEGX/
@@ -60,10 +61,6 @@ variables:                    # Pass environment variables as key value pairs.
   DJANGO_SECURE_SSL_REDIRECT: False
   DJANGO_ACCOUNT_ALLOW_REGISTRATION: True
   WEB_CONCURRENCY: 4
-
-secrets:
-  POSTGRES_PASSWORD:
-    secretsmanager: 'dev/POSTGRES_PASSWORD:POSTGRES_PASSWORD::'
 
 # You can override any of the values defined above by environment.
 #environments:
