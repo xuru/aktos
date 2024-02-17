@@ -1,16 +1,19 @@
 from io import TextIOWrapper
 
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
-    extend_schema, inline_serializer, OpenApiParameter
-)
-from rest_framework import parsers, serializers, status
+from drf_spectacular.utils import OpenApiParameter
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import inline_serializer
+from rest_framework import parsers
+from rest_framework import serializers
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from aktos.common.pagination import get_paginated_response, PageNumberPagination
+from aktos.common.pagination import PageNumberPagination
+from aktos.common.pagination import get_paginated_response
 from aktos.consumers.selectors import consumers_get_consumers
 from aktos.consumers.services import consumers_ingest_csv_data
 
@@ -29,13 +32,16 @@ class ConsumerListApi(APIView):
         status = serializers.CharField(required=False)
 
     class OutputSerializer(serializers.Serializer):
-        address = inline_serializer("AddressSerializer", fields={
-            "address1": serializers.CharField(),
-            "address2": serializers.CharField(),
-            "city": serializers.CharField(),
-            "state": serializers.CharField(),
-            "zip_code": serializers.CharField()
-        })
+        address = inline_serializer(
+            "AddressSerializer",
+            fields={
+                "address1": serializers.CharField(),
+                "address2": serializers.CharField(),
+                "city": serializers.CharField(),
+                "state": serializers.CharField(),
+                "zip_code": serializers.CharField(),
+            },
+        )
         ref_id = serializers.UUIDField()
         ssn = serializers.CharField()
         name = serializers.CharField()
@@ -43,32 +49,46 @@ class ConsumerListApi(APIView):
         balance = serializers.DecimalField(max_digits=18, decimal_places=2)
 
     @extend_schema(
-        summary='List of consumers',
-        description='List of consumers in the system.',
+        summary="List of consumers",
+        description="List of consumers in the system.",
         request=None,
         parameters=[
-            OpenApiParameter(name='min_balance', type=OpenApiTypes.FLOAT, location=OpenApiParameter.QUERY, description='Minimum balance'),
             OpenApiParameter(
-                name='max_balance', type=OpenApiTypes.FLOAT, location=OpenApiParameter.QUERY,
-                description='Maximum balance'
+                name="min_balance",
+                type=OpenApiTypes.FLOAT,
+                location=OpenApiParameter.QUERY,
+                description="Minimum balance",
             ),
             OpenApiParameter(
-                name='consumer_name', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY,
-                description='Name of the consumer'
+                name="max_balance",
+                type=OpenApiTypes.FLOAT,
+                location=OpenApiParameter.QUERY,
+                description="Maximum balance",
             ),
             OpenApiParameter(
-                name='status', type=OpenApiTypes.STR, location=OpenApiParameter.QUERY,
-                description='Status of the consumer'
+                name="consumer_name",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Name of the consumer",
             ),
             OpenApiParameter(
-                name='page', type=OpenApiTypes.INT, location=OpenApiParameter.QUERY,
-                description='Page number'
+                name="status",
+                type=OpenApiTypes.STR,
+                location=OpenApiParameter.QUERY,
+                description="Status of the consumer",
             ),
             OpenApiParameter(
-                name='page_size', type=OpenApiTypes.INT, location=OpenApiParameter.QUERY,
-                description='Number of items returned per page'
+                name="page",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description="Page number",
             ),
-
+            OpenApiParameter(
+                name="page_size",
+                type=OpenApiTypes.INT,
+                location=OpenApiParameter.QUERY,
+                description="Number of items returned per page",
+            ),
         ],
         responses=OutputSerializer,
     )
@@ -81,14 +101,13 @@ class ConsumerListApi(APIView):
 
         qs = consumers_get_consumers(filters=params)
 
-        rv = get_paginated_response(
+        return get_paginated_response(
             pagination_class=PageNumberPagination,
             serializer_class=self.OutputSerializer,
             queryset=qs,
             request=request,
             view=self,
         )
-        return rv
 
 
 class ConsumerUploadApi(APIView):
@@ -103,6 +122,7 @@ class ConsumerUploadApi(APIView):
         """
         A Serializer for uploading a csv of consumers
         """
+
         content = serializers.FileField(
             help_text="A CSV file to upload.",
             required=True,
@@ -110,8 +130,8 @@ class ConsumerUploadApi(APIView):
         )
 
     @extend_schema(
-        summary='Upload consumers',
-        description='Ingest consumers into the system.',
+        summary="Upload consumers",
+        description="Ingest consumers into the system.",
         request=inline_serializer(
             name="InlineFormSerializer",
             fields={
@@ -123,10 +143,10 @@ class ConsumerUploadApi(APIView):
     def post(self, request: Request):
         # Using a serializer ensures we won't get a query param injection attack
 
-        if 'file' not in request.FILES:
-            raise serializers.ValidationError("No file provided")
+        if "file" not in request.FILES:
+            raise serializers.ValidationError("No file provided")  # noqa
 
-        file = TextIOWrapper(request.FILES['file'].file, encoding=request.encoding)
+        file = TextIOWrapper(request.FILES["file"].file, encoding=request.encoding)
         consumers_ingest_csv_data(file=file)
 
         return Response(status=status.HTTP_201_CREATED)

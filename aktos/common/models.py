@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import UTC
 from datetime import datetime
 
 from django.db import models
@@ -10,7 +10,7 @@ class SoftDeletionQuerySet(models.QuerySet):
 
     def delete(self):
         """Soft deletion. Mark objects with deleted_at date and time"""
-        return super().update(deleted_at=datetime.now(timezone.UTC))
+        return super().update(deleted_at=datetime.now(UTC))
 
     def hard_delete(self):
         """Complete deletion of objects."""
@@ -25,7 +25,7 @@ class SoftDeletionQuerySet(models.QuerySet):
         return self.exclude(deleted_at=None)
 
 
-class SoftDeletionManager(models.Manager.from_queryset(SoftDeletionQuerySet)):  # type: ignore
+class SoftDeletionManager(models.Manager.from_queryset(SoftDeletionQuerySet)):
     """Manager for models with support of soft deletion."""
 
     def __init__(self, *args, **kwargs):

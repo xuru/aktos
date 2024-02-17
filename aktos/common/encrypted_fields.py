@@ -1,5 +1,3 @@
-# mypy: ignore-errors
-
 import contextlib
 import json
 
@@ -51,11 +49,7 @@ class EncryptedFieldMixin:
     @classmethod
     def values_match(cls, encrypted_value, raw_value):
         decrypted_value = cls().decrypt_value(encrypted_value)
-        return (
-            decrypted_value is not None
-            and len(decrypted_value) > 0
-            and decrypted_value == raw_value
-        )
+        return decrypted_value is not None and len(decrypted_value) > 0 and decrypted_value == raw_value
 
 
 class EncryptedTextField(EncryptedFieldMixin, models.TextField):
@@ -90,12 +84,7 @@ class EncryptedJsonField(EncryptedFieldMixin, JSONField):
                 value = self.cipher.decrypt(value)
 
         # DJango/Postgres adds a single quote to the start/end of the blob - remove it and cast to json
-        if (
-            isinstance(value, str)
-            and len(value) > 1
-            and value.startswith("'")
-            and value.endswith("'")
-        ):
+        if isinstance(value, str) and len(value) > 1 and value.startswith("'") and value.endswith("'"):
             value = value[1:-1]
 
         with contextlib.suppress(BaseException):

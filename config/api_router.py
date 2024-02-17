@@ -12,6 +12,6 @@ router.register("users", UserViewSet)
 
 
 app_name = "api"
-urlpatterns = [
+urlpatterns = [  # noqa
     path("consumers/", include(("aktos.consumers.urls", "consumers"))),
 ] + router.urls

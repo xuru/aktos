@@ -6,7 +6,8 @@ from model_utils.fields import StatusField
 from model_utils.models import TimeStampedModel
 
 from aktos.common.encrypted_fields import EncryptedCharField
-from aktos.consumers.enums import ConsumerStatus, US_STATES
+from aktos.consumers.enums import US_STATES
+from aktos.consumers.enums import ConsumerStatus
 
 
 class ConsumerAddress(TimeStampedModel):
@@ -20,7 +21,13 @@ class ConsumerAddress(TimeStampedModel):
 class Consumer(TimeStampedModel):
     STATUS = ConsumerStatus.choices
 
-    address = models.OneToOneField(ConsumerAddress, on_delete=models.CASCADE, related_name='consumer', null=True, blank=True)
+    address = models.OneToOneField(
+        ConsumerAddress,
+        on_delete=models.CASCADE,
+        related_name="consumer",
+        null=True,
+        blank=True,
+    )
     ref_id = models.UUIDField(default=uuid.uuid4)
     ssn = EncryptedCharField(max_length=2048)
     name = models.CharField(max_length=128)

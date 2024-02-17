@@ -4,7 +4,7 @@ from aktos.consumers.filters import ConsumerFilter
 from aktos.consumers.models import Consumer
 
 
-def consumers_get_consumers(*, filters: dict = None) -> QuerySet:
+def consumers_get_consumers(*, filters: dict | None = None) -> QuerySet:
     filters = filters or {}
 
     qs = Consumer.objects.all()

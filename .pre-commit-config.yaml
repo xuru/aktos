@@ -9,7 +9,9 @@ repos:
     rev: v4.5.0
     hooks:
       - id: trailing-whitespace
+        exclude: /README\.rst$|\.pot?$
       - id: end-of-file-fixer
+        types: [ python ]
       - id: check-json
       - id: check-toml
       - id: check-xml
