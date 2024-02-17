@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=aktos
+POSTGRES_USER=pXKdhUGeEQbtgGhzGGmDfTjNnaibpWxv
+POSTGRES_PASSWORD=of6zh6HKnNPPpMmZh7njsBD5Nru3vwCU0PQO0FfAkbknP5unTmco33ig0H40Obvk
