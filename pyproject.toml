@@ -2,6 +2,8 @@
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "--ds=config.settings.test --reuse-db"
+required_plugins = ["pytest-django", "pytest-cov"]
+DJANGO_SETTINGS_MODULE = "configs.settings.test"
 python_files = [
     "tests.py",
     "test_*.py",
