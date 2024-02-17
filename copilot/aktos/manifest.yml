@@ -1,0 +1,62 @@
+# The manifest for the "aktos" service.
+# Read the full specification for the "Load Balanced Web Service" type at:
+#  https://aws.github.io/copilot-cli/docs/manifest/lb-web-service/
+
+# Your service name will be used in naming your resources like log groups, ECS services, etc.
+name: aktos
+type: Load Balanced Web Service
+
+# Distribute traffic to your service.
+http:
+  # Requests to this path will be forwarded to your service.
+  # To match all requests you can use the "/" path.
+  path: '/'
+  # You can specify a custom health check path. The default is "/".
+  # healthcheck: '/'
+
+# Configuration for your containers and service.
+image:
+  # Docker build arguments. For additional overrides: https://aws.github.io/copilot-cli/docs/manifest/lb-web-service/#image-build
+  build:
+    dockerfile: compose/production/django/Dockerfile
+    context: .
+  # Port exposed through your container to route traffic to it.
+  port: 5000
+
+cpu: 256       # Number of CPU units for the task.
+memory: 512    # Amount of memory in MiB used by the task.
+platform: linux/x86_64  # See https://aws.github.io/copilot-cli/docs/manifest/lb-web-service/#platform
+count: 1       # Number of tasks that should be running in your service.
+exec: true     # Enable running commands in your container.
+network:
+  connect: true # Enable Service Connect for intra-environment traffic between services.
+
+# storage:
+  # readonly_fs: true       # Limit to read-only access to mounted root filesystems.
+
+# Optional fields for more advanced use-cases.
+#
+variables:                    # Pass environment variables as key value pairs.
+#  LOG_LEVEL: info
+  POSTGRES_DB: database-aktos
+  POSTGRES_USER: postgres
+  POSTGRES_HOST: database-aktos.cvma8i2eurej.us-east-1.rds.amazonaws.com
+  POSTGRES_PORT: 5432
+  DJANGO_SETTINGS_MODULE: config.settings.production
+  DJANGO_SECRET_KEY: MOdSD2OWeLgsxvdDvXM8r7He5krtLfzLWCMaTsyo2Ab1WE0vytK4yGhrYzZtQ5OI
+  DJANGO_ADMIN_URL: qO2OmgQxz7kB4TjiVmkKqAuVAUIWrEGX/
+  DJANGO_ALLOWED_HOSTS: "*"
+  DJANGO_SECURE_SSL_REDIRECT: False
+  DJANGO_ACCOUNT_ALLOW_REGISTRATION: True
+  WEB_CONCURRENCY: 4
+
+secrets:
+  POSTGRES_PASSWORD:
+    secretsmanager: 'dev/POSTGRES_PASSWORD:POSTGRES_PASSWORD::'
+
+# You can override any of the values defined above by environment.
+#environments:
+#  test:
+#    count: 2               # Number of tasks to run for the "test" environment.
+#    deployment:            # The deployment strategy for the "test" environment.
+#       rolling: 'recreate' # Stops existing tasks before new ones are started for faster deployments.

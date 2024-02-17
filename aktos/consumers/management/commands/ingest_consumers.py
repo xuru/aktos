@@ -1,17 +1,18 @@
+import io
+from pathlib import Path
+
 from django.core.management import BaseCommand
 
-from wedge.common.fixtures import update_all_fixtures
+from aktos.consumers.services import consumers_ingest_csv_data
 
 
 class Command(BaseCommand):
-    help = "Setup or ensure default fixtures in the database."
+    help = "Injest a number of CSV files with consumer data"
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            "--dry-run",
-            action="store_true",
-            help="Just show what migrations would be made; don't actually write them.",
-        )
+        parser.add_argument("files", default=[], nargs="*", type=str)
 
     def handle(self, *args, **options):
-        update_all_fixtures(verbosity=options["verbosity"], dry_run=options["dry_run"])
+        for filename in options["files"]:
+            with Path(filename).open() as fp:
+                consumers_ingest_csv_data(file=io.StringIO(fp.read()))
