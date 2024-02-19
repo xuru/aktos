@@ -3,7 +3,7 @@
 minversion = "6.0"
 addopts = "--ds=config.settings.test --reuse-db"
 required_plugins = ["pytest-django", "pytest-cov"]
-DJANGO_SETTINGS_MODULE = "configs.settings.test"
+DJANGO_SETTINGS_MODULE = "config.settings.test"
 python_files = [
     "tests.py",
     "test_*.py",
@@ -11,18 +11,40 @@ python_files = [
 
 # ==== Coverage ====
 [tool.coverage.run]
-include = ["aktos/**"]
-omit = ["*/migrations/*", "*/tests/*"]
+source = ["."]
+branch = true
+omit = ["**/tests/**", "**/migrations/**", "**/data_migrations/**", "manage.py", "config/wsgi.py", "config/urls.py"]
 plugins = ["django_coverage_plugin"]
+
+[tool.coverage.report]
+fail_under = 60
+skip_covered = true
+show_missing = true
+exclude_lines = ["pragma: no cover", "raise NotImplementedError", "pass"]
 
 # ==== mypy ====
 [tool.mypy]
 python_version = "3.11"
-check_untyped_defs = true
 ignore_missing_imports = true
 warn_unused_ignores = true
 warn_redundant_casts = true
+check_untyped_defs = true
 warn_unused_configs = true
+strict_optional = false
+follow_imports = "silent"
+# https://mypy.readthedocs.io/en/stable/config_file.html#confval-disallow_untyped_calls
+disallow_untyped_calls = false
+# https://mypy.readthedocs.io/en/stable/config_file.html#confval-warn_unreachable
+warn_unreachable = true
+# https://mypy.readthedocs.io/en/stable/config_file.html#confval-no_implicit_optional
+#no_implicit_optional = true
+#strict_equality = true
+
+# output style
+show_column_numbers = true
+show_absolute_path = true
+show_error_codes = true
+
 plugins = [
     "mypy_django_plugin.main",
     "mypy_drf_plugin.main",
@@ -35,6 +57,12 @@ ignore_errors = true
 
 [tool.django-stubs]
 django_settings_module = "config.settings.test"
+
+[mypy.plugins.django-stubs]
+django_settings_module = "config.settings.test"
+
+[tool.mypy_django_plugin]
+ignore_missing_model_attributes = true
 
 # ==== djLint ====
 [tool.djlint]
